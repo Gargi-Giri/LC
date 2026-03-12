@@ -1,18 +1,26 @@
-name: Sync Leetcode
+name: Sync LeetCode
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 8 * * 6"
+workflow_dispatch:
+schedule:
+ - cron: "0 8 * * 6"   # Runs every Saturday at 8 AM UTC
+
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Sync
-        uses: joshcai/leetcode-sync@master
-        with:
-          github-token: ${{ github.token }}
-          leetcode-csrf-token: ${{ secrets.CSRF_TOKEN }}
-          leetcode-session: ${{ secrets.LEETCODE_SESSION }}
+sync:
+runs-on: ubuntu-latest
+
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
+
+  - name: Sync LeetCode submissions
+    uses: LeetCodeSync/LeetCode-Sync-Action@v1.5
+    with:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      leetcode-session: ${{ secrets.LEETCODE_SESSION }}
+      csrf-token: ${{ secrets.CSRF_TOKEN }}
+      destination-folder: leetcode
+      commit-message: "Sync LeetCode submissions"
